@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33328.57
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Poset", "Poset\Poset.vcxproj", "{B081F625-2867-4ED8-8420-8EBCAD16FE28}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Debug|x64.ActiveCfg = Debug|x64
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Debug|x64.Build.0 = Debug|x64
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Debug|x86.ActiveCfg = Debug|Win32
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Debug|x86.Build.0 = Debug|Win32
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Release|x64.ActiveCfg = Release|x64
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Release|x64.Build.0 = Release|x64
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Release|x86.ActiveCfg = Release|Win32
+		{B081F625-2867-4ED8-8420-8EBCAD16FE28}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCE72A30-1E84-469D-A30D-0D61A7A7F5DE}
+	EndGlobalSection
+EndGlobal
