@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #else
+#include <iostream>
 #include <cstdlib>
 #endif
 
