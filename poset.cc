@@ -339,7 +339,7 @@ bool cxx::poset_insert(unsigned long id, char const* value) {
 		//We can't add null value;
 		if constexpr (debug) {
 			cerr << "poset_insert: poset " << id
-				<< " invalid value1 (NULL)" << "\n";
+				<< " invalid value (NULL)" << "\n";
 		}
 		return false;
 	}
