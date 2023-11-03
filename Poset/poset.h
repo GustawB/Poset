@@ -41,8 +41,8 @@ namespace cxx {
 
 		/*
 		* Removes the given value and all its relations from the given poset.
-		* If the given poset or value doesn't exist, this function returns false,
-		* and tru, if removal was successful.
+		* If the given poset or value doesn't exist, this function returns
+		* false, and true, if removal was successful.
 		*/
 		bool poset_remove(unsigned long id, char const* value);
 
@@ -53,7 +53,8 @@ namespace cxx {
 		* If at least one ot these conditions isn't met, this function
 		* does nothing.
 		*/
-		bool poset_add(unsigned long id, char const* value1, char const* value2);
+		bool poset_add(unsigned long id, char const* value1, 
+			char const* value2);
 
 		/*
 		* If poset with the given id exists, and so do value1 and value2, AND 
@@ -61,17 +62,19 @@ namespace cxx {
 		* between them won't disturb the partial order, this function deletes
 		* the relation and returns true. Otherwise, it returns false.
 		*/
-		bool poset_del(unsigned long id, char const* value1, char const* value2);
+		bool poset_del(unsigned long id, char const* value1, 
+			char const* value2);
 
 		/*
 		* Checks whether the given poset exists, that it contains values one
 		* and two, and if value1 > value2. If all if these conditions are met,
 		* poset_test returns true, and false otherwise.
 		*/
-		bool poset_test(unsigned long id, char const* value1, char const* value2);
+		bool poset_test(unsigned long id, char const* value1, 
+			char const* value2);
 
 		/*
-		* If the given poset exists, this function removes all its elements and 
+		* If the given poset exists, this function removes all its elements and
 		* relations between them, and otherwise, it does nothing.
 		*/
 		void poset_clear(unsigned long id);
