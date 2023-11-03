@@ -65,7 +65,7 @@ namespace cxx {
 
 		/*
 		* Checks whether the given poset exists, that it contains values one
-		* and two, and if value1 < value2. If all if these conditions are met,
+		* and two, and if value1 > value2. If all if these conditions are met,
 		* poset_test returns true, and false otherwise.
 		*/
 		bool poset_test(unsigned long id, char const* value1, char const* value2);
