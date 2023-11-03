@@ -112,7 +112,8 @@ namespace {
 
 	//Checks whether the value1 is the parent of the value2.
 	//Said operation is realised as BFS.
-	bool findParent(unsigned long id, const string* value1, char const* value2) {
+	bool findParent(unsigned long id, const string* value1,
+		char const* value2) {
 		queue<const string*> BSTqueue;
 		auto value1Iter = poset_elements()[id].find(*value1);
 		auto value2Iter = poset_elements()[id].find(value2);
@@ -219,7 +220,8 @@ bool cxx::poset_remove(unsigned long id, char const* value) {
 		auto elementToRemove = poset_elements()[id].find(value);
 		for (auto& pair : poset_collection()[id]) {
 			if (pair.second.find(&*elementToRemove) != pair.second.end()) {
-				//Value is the parent of something, we need to re-map the relation.
+				//Value is the parent of something, 
+				//we need to re-map the relation.
 				if (bIsParentInCollection) {
 					for (const string* s : poset_collection()[id]
 						[&*elementToRemove]) {
@@ -238,13 +240,15 @@ bool cxx::poset_remove(unsigned long id, char const* value) {
 		//Remove element from th list of the poset's elements.
 		poset_elements()[id].erase(value);
 		if constexpr (debug) {
-			cerr << "poset_remove: poset " << id << " , element " << s << " removed" << "\n";
+			cerr << "poset_remove: poset " << id << ", element " << s
+				<< " removed" << "\n";
 		}
 		return true;
 	}
 	else {
 		if constexpr (debug) {
-			cerr << "poset_remove: " << id << ", element " << s << " does not exist" << "\n";
+			cerr << "poset_remove: poset " << id << ", element " << s
+				<< " does not exist" << "\n";
 		}
 
 		return false;
@@ -275,24 +279,24 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 		return false;
 	}
 
-	//Poset doesn't exist or at least one of the values doesn't exist. 
-	if (!findKeyInElements(id) || !findValueInPoset(id, value1) ||
-		!findValueInPoset(id, value2)) {
+	if (!findKeyInElements(id)) {//Poset doesn't exist.
 		if constexpr (debug) {
-			if (!findKeyInElements(id)) {
-				cerr << "poset_del: poset " << id
-					<< " does not exist" << "\n";
-			}
-
-			if (!findValueInPoset(id, value1)) {
-				cerr << "poset_del: poset" << id << ", element " << s1
-					<< " does not exist" << "\n";
-			}
-
-			if (!findValueInPoset(id, value2)) {
-				cerr << "poset_del: poset" << id << ", element " << s2
-					<< " does not exist" << "\n";
-			}
+			cerr << "poset_del: poset " << id
+				<< " does not exist" << "\n";
+		}
+		return false;
+	}
+	else if (!findValueInPoset(id, value1)) {//Value1 doesn't exist.
+		if constexpr (debug) {
+			cerr << "poset_del: poset " << id << ", element " << s1
+				<< " does not exist" << "\n";
+		}
+		return false;
+	}
+	else if (!findValueInPoset(id, value2)) {//Value2 doesn't exist.
+		if constexpr (debug) {
+			cerr << "poset_del: poset " << id << ", element " << s2
+				<< " does not exist" << "\n";
 		}
 		return false;
 	}
@@ -301,8 +305,8 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 	if (strcmp(value1, value2) == 0) {
 		//We can't delete a->a relation.
 		if constexpr (debug) {
-			cerr << "poset_del: poset " << id << " relation ("
-				<< s1 << "," << s2 << ") cannot be deleted" << "\n";
+			cerr << "poset_del: poset " << id << ", relation ("
+				<< s1 << ", " << s2 << ") cannot be deleted" << "\n";
 		}
 		return false;
 	}
@@ -315,13 +319,15 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 		//Value1 and Value2 are in a relation.
 		for (const string* elem : poset_collection()[id][&*value1Iter]) {
 			if (elem != &*value2Iter) {
-				//Value2 isn't strictly after ther value1 in the relation chain.
+				//Value2 isn't strictly after ther
+				//value1 in the relation chain.
 				if (findParent(id, elem, value2)) {
 					//If we have following relations: b->c, c->d, b->d,
 					//then we can't delete the relation.
 					if constexpr (debug) {
-						cerr << "poset_del: poset " << id << " relation ("
-							<< s1 << "," << s2 << ") cannot be deleted" << "\n";
+						cerr << "poset_del: poset " << id << ", relation ("
+							<< s1 << ", " << s2 <<
+							") cannot be deleted" << "\n";
 					}
 					return false;
 				}
@@ -334,8 +340,7 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 				pair.second.insert(&*value2Iter);
 			}
 		}
-		if (poset_collection()[id].find(&*value2Iter) !=
-			poset_collection()[id].end()) {
+		if (findValueInCollection(id, value2)) {
 			//a->b->c, deleting a->b, we need to remap it so that a->c
 			for (const string* elem : (poset_collection()[id][&*value2Iter])) {
 				poset_collection()[id][&*value1Iter].insert(elem);
@@ -344,8 +349,8 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 		poset_collection()[id][&*value1Iter].erase(&*value2Iter);
 
 		if constexpr (debug) {
-			cerr << "poset_del: poset " << id << " relation (" <<
-				s1 << "," << s2 << ") deleted" << "\n";
+			cerr << "poset_del: poset " << id << ", relation (" <<
+				s1 << ", " << s2 << ") deleted" << "\n";
 		}
 
 		return true;
@@ -353,8 +358,8 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 	else {
 		//Elements aren't in a relation, we delete nothing.
 		if constexpr (debug) {
-			cerr << "poset_del: poset " << id << " relation ("
-				<< s1 << "," << s2 << ") cannot be deleted" << "\n";
+			cerr << "poset_del: poset " << id << ", relation ("
+				<< s1 << ", " << s2 << ") cannot be deleted" << "\n";
 		}
 		return false;
 	}
@@ -396,7 +401,7 @@ bool cxx::poset_insert(unsigned long id, char const* value) {
 	if (value == NULL) {
 		//We can't add null value;
 		if constexpr (debug) {
-			cerr << "poset_insert: invalid value1 (NULL)" << "\n";
+			cerr << "poset_insert: invalid value (NULL)" << "\n";
 		}
 		return false;
 	}
@@ -444,11 +449,11 @@ bool cxx::poset_add(unsigned long id, char const* value1,
 		//We can't delete relation between NULLs.
 		if constexpr (debug) {
 			if (value1 == NULL) {
-				cerr << "poset_add: poset invalid value1 (NULL)" << "\n";
+				cerr << "poset_add: invalid value1 (NULL)" << "\n";
 			}
 
 			if (value2 == NULL) {
-				cerr << "poset_add: poset invalid value2 (NULL)" << "\n";
+				cerr << "poset_add: invalid value2 (NULL)" << "\n";
 			}
 		}
 
@@ -456,10 +461,27 @@ bool cxx::poset_add(unsigned long id, char const* value1,
 	}
 	else if (findKeyInCollection(id)) {
 		//Poset with the given id exists.
-		if (findValueInPoset(id, value1) && findValueInPoset(id, value2)) {
+		if (!findValueInPoset(id, value1)) {
+			//Value1 is not in the poset.
+			if constexpr (debug) {
+				cerr << "poset_add: poset " << id << ", element " << s1
+					<< " does not exist" << "\n";
+			}
+			return false;
+		}
+		else if (!findValueInPoset(id, value2)) {
+			//Value2 is not in the poset.
+			if constexpr (debug) {
+				cerr << "poset_add: poset " << id << ", element " << s2
+					<< " does not exist" << "\n";
+			}
+			return false;
+		}
+		else {
 			//Both values are in the poset.
 			if (strcmp(value1, value2) == 0) {
-				//We are trying to add a relation betweene the same element, and that relation already exists.
+				//We are trying to add a relation betweene the same element,
+				//and that relation already exists.
 				if constexpr (debug) {
 					cerr << "poset_add: poset " << id << ", relation (" << s1
 						<< ", " << s2 << ") cannot be added" << "\n";
@@ -471,7 +493,8 @@ bool cxx::poset_add(unsigned long id, char const* value1,
 				(findValueInCollection(id, value2) &&
 					findParent(id, value2, value1))) {
 				//if value2 is already a parent of the value 1, or value1
-				//is a parent of the value2, we don't want to add a new relation.
+				//is a parent of the value2, we don't want 
+				//to add a new relation.
 				if constexpr (debug) {
 					cerr << "poset_add: poset " << id << ", relation (" << s1
 						<< ", " << s2 << ") cannot be added" << "\n";
@@ -489,21 +512,6 @@ bool cxx::poset_add(unsigned long id, char const* value1,
 				}
 				return true;
 			}
-		}
-		else {//At least one value isn't in the poset, we add nothing.
-			if constexpr (debug) {
-				if (!findValueInPoset(id, value1)) {
-					cerr << "poset_add: poset " << id << ", element " << s1
-						<< " does not exist" << "\n";
-				}
-
-				if (!findValueInPoset(id, value2)) {
-					cerr << "poset_add: poset " << id << ", element " << s2
-						<< " does not exist" << "\n";
-				}
-			}
-
-			return false;
 		}
 	}
 	else {
@@ -547,44 +555,54 @@ bool cxx::poset_test(unsigned long id, char const* value1,
 				//value1 exists and is in relation with itself.
 				if constexpr (debug) {
 					cerr << "poset_test: poset " << id << ", relation ("
-						<< s1 << " , " << s1 << ")" << " exists" << "\n";
+						<< s1 << ", " << s1 << ")" << " exists" << "\n";
 				}
 				return true;
 			}
 			else {
 				//value1 is not in the given poset.
 				if constexpr (debug) {
-					cerr << "poset_add: poset " << id << ", element "
+					cerr << "poset_test: poset " << id << ", element "
 						<< s2 << " does not exist" << "\n";
 				}
 				return false;
 			}
 		}
-		else if (findValueInPoset(id, value1) && findValueInPoset(id, value2)) {
+		else if (!findValueInPoset(id, value1)) {
+			//Value1 is not in the given poset.
+			if constexpr (debug) {
+				cerr << "poset_test: poset " << id << ", element "
+					<< s1 << " does not exist" << "\n";
+			}
+			return false;
+		}
+		else if (!findValueInPoset(id, value2)) {
+			//Value2 is not in the given poset.
+			if constexpr (debug) {
+				cerr << "poset_test: poset " << id << ", element "
+					<< s2 << " does not exist" << "\n";
+			}
+			return false;
+		}
+		else {
 			//Both values are in the poset.
 			if (findValueInCollection(id, value1) &&
 				findParent(id, value1, value2)) {
 				//Value1 is a parent of the value2.
 				if constexpr (debug) {
 					cerr << "poset_test: poset " << id << ", relation ("
-						<< s1 << " , " << s2 << ")" << " exists" << "\n";
+						<< s1 << ", " << s2 << ")" << " exists" << "\n";
 				}
 				return true;
 			}
 			else {//Value1 is not a parent of the value2.
 				if constexpr (debug) {
 					cerr << "poset_test: poset " << id << ", relation ("
-						<< s1 << " , " << s2 << ")" << " does not exist" << "\n";
+						<< s1 << ", " << s2 << ")" <<
+						" does not exist" << "\n";
 				}
 				return false;
 			}
-		}
-		else {//At least one value isn't in the poset, we add nothing.
-			if constexpr (debug) {
-				cerr << "poset_test: poset " << id
-					<< " does not exist" << "\n";
-			}
-			return false;
 		}
 	}
 	else {
@@ -598,7 +616,7 @@ bool cxx::poset_test(unsigned long id, char const* value1,
 
 void cxx::poset_clear(unsigned long id) {
 	if constexpr (debug) {
-		cerr << "poset_clear: poset (" << id << ")" << "\n";
+		cerr << "poset_clear(" << id << ")" << "\n";
 	}
 
 	if (findKeyInElements(id)) {
