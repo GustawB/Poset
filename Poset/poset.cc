@@ -238,13 +238,13 @@ bool cxx::poset_remove(unsigned long id, char const* value) {
 		//Remove element from th list of the poset's elements.
 		poset_elements()[id].erase(value);
 		if constexpr (debug) {
-			cerr << "poset_remove: poset " << id << ", element " << s << " removed" << "\n";
+			cerr << "poset_remove: poset " << id << " , element " << s << " removed" << "\n";
 		}
 		return true;
 	}
 	else {
 		if constexpr (debug) {
-			cerr << "poset_remove: poset " << id << ", element " << s << " does not exist" << "\n";
+			cerr << "poset_remove: " << id << ", element " << s << " does not exist" << "\n";
 		}
 
 		return false;
@@ -283,12 +283,14 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 				cerr << "poset_del: poset " << id
 					<< " does not exist" << "\n";
 			}
-			else if (!findValueInPoset(id, value1)) {
-				cerr << "poset_del: poset " << id << ", element " << s1
+
+			if (!findValueInPoset(id, value1)) {
+				cerr << "poset_del: poset" << id << ", element " << s1
 					<< " does not exist" << "\n";
 			}
-			else if (!findValueInPoset(id, value2)) {
-				cerr << "poset_del: poset " << id << ", element " << s2
+
+			if (!findValueInPoset(id, value2)) {
+				cerr << "poset_del: poset" << id << ", element " << s2
 					<< " does not exist" << "\n";
 			}
 		}
@@ -299,8 +301,8 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 	if (strcmp(value1, value2) == 0) {
 		//We can't delete a->a relation.
 		if constexpr (debug) {
-			cerr << "poset_del: poset " << id << ", relation ("
-				<< s1 << ", " << s2 << ") cannot be deleted" << "\n";
+			cerr << "poset_del: poset " << id << " relation ("
+				<< s1 << "," << s2 << ") cannot be deleted" << "\n";
 		}
 		return false;
 	}
@@ -318,8 +320,8 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 					//If we have following relations: b->c, c->d, b->d,
 					//then we can't delete the relation.
 					if constexpr (debug) {
-						cerr << "poset_del: poset " << id << ", relation ("
-							<< s1 << ", " << s2 << ") cannot be deleted" << "\n";
+						cerr << "poset_del: poset " << id << " relation ("
+							<< s1 << "," << s2 << ") cannot be deleted" << "\n";
 					}
 					return false;
 				}
@@ -342,8 +344,8 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 		poset_collection()[id][&*value1Iter].erase(&*value2Iter);
 
 		if constexpr (debug) {
-			cerr << "poset_del: poset " << id << ", relation (" <<
-				s1 << ", " << s2 << ") deleted" << "\n";
+			cerr << "poset_del: poset " << id << " relation (" <<
+				s1 << "," << s2 << ") deleted" << "\n";
 		}
 
 		return true;
@@ -351,8 +353,8 @@ bool cxx::poset_del(unsigned long id, char const* value1,
 	else {
 		//Elements aren't in a relation, we delete nothing.
 		if constexpr (debug) {
-			cerr << "poset_del: poset " << id << ", relation ("
-				<< s1 << ", " << s2 << ") cannot be deleted" << "\n";
+			cerr << "poset_del: poset " << id << " relation ("
+				<< s1 << "," << s2 << ") cannot be deleted" << "\n";
 		}
 		return false;
 	}
@@ -394,7 +396,7 @@ bool cxx::poset_insert(unsigned long id, char const* value) {
 	if (value == NULL) {
 		//We can't add null value;
 		if constexpr (debug) {
-			cerr << "poset_insert: invalid value (NULL)" << "\n";
+			cerr << "poset_insert: invalid value1 (NULL)" << "\n";
 		}
 		return false;
 	}
@@ -442,11 +444,11 @@ bool cxx::poset_add(unsigned long id, char const* value1,
 		//We can't delete relation between NULLs.
 		if constexpr (debug) {
 			if (value1 == NULL) {
-				cerr << "poset_add: invalid value1 (NULL)" << "\n";
+				cerr << "poset_add: poset invalid value1 (NULL)" << "\n";
 			}
 
 			if (value2 == NULL) {
-				cerr << "poset_add: invalid value2 (NULL)" << "\n";
+				cerr << "poset_add: poset invalid value2 (NULL)" << "\n";
 			}
 		}
 
@@ -494,7 +496,8 @@ bool cxx::poset_add(unsigned long id, char const* value1,
 					cerr << "poset_add: poset " << id << ", element " << s1
 						<< " does not exist" << "\n";
 				}
-				else if (!findValueInPoset(id, value2)) {
+
+				if (!findValueInPoset(id, value2)) {
 					cerr << "poset_add: poset " << id << ", element " << s2
 						<< " does not exist" << "\n";
 				}
@@ -544,14 +547,14 @@ bool cxx::poset_test(unsigned long id, char const* value1,
 				//value1 exists and is in relation with itself.
 				if constexpr (debug) {
 					cerr << "poset_test: poset " << id << ", relation ("
-						<< s1 << ", " << s1 << ")" << " exists" << "\n";
+						<< s1 << " , " << s1 << ")" << " exists" << "\n";
 				}
 				return true;
 			}
 			else {
 				//value1 is not in the given poset.
 				if constexpr (debug) {
-					cerr << "poset_test: poset " << id << ", element "
+					cerr << "poset_add: poset " << id << ", element "
 						<< s2 << " does not exist" << "\n";
 				}
 				return false;
@@ -564,25 +567,21 @@ bool cxx::poset_test(unsigned long id, char const* value1,
 				//Value1 is a parent of the value2.
 				if constexpr (debug) {
 					cerr << "poset_test: poset " << id << ", relation ("
-						<< s1 << ", " << s2 << ")" << " exists" << "\n";
+						<< s1 << " , " << s2 << ")" << " exists" << "\n";
 				}
 				return true;
 			}
 			else {//Value1 is not a parent of the value2.
 				if constexpr (debug) {
 					cerr << "poset_test: poset " << id << ", relation ("
-						<< s1 << ", " << s2 << ")" << " does not exist" << "\n";
+						<< s1 << " , " << s2 << ")" << " does not exist" << "\n";
 				}
 				return false;
 			}
 		}
 		else {//At least one value isn't in the poset, we add nothing.
-			if (!findValueInPoset(id, value1)) {
-				cerr << "poset_test: poset " << id << ", element " << s1
-					<< " does not exist" << "\n";
-			}
-			else if (!findValueInPoset(id, value2)) {
-				cerr << "poset_test: poset " << id << ", element " << s2
+			if constexpr (debug) {
+				cerr << "poset_test: poset " << id
 					<< " does not exist" << "\n";
 			}
 			return false;
@@ -599,7 +598,7 @@ bool cxx::poset_test(unsigned long id, char const* value1,
 
 void cxx::poset_clear(unsigned long id) {
 	if constexpr (debug) {
-		cerr << "poset_clear(" << id << ")" << "\n";
+		cerr << "poset_clear: poset (" << id << ")" << "\n";
 	}
 
 	if (findKeyInElements(id)) {
